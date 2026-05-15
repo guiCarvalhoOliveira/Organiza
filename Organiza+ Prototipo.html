@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Organiza+</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: #111;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: white;
+    }
+
+    .app {
+      width: 420px;
+      min-height: 850px;
+      background: #1b1b1b;
+      border-radius: 20px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #2d2d2d;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .title {
+      font-size: 36px;
+      font-weight: bold;
+    }
+
+    .title span {
+      color: #2de39a;
+    }
+
+    .subtitle {
+      color: #d1d1d1;
+      margin-top: 5px;
+      font-size: 14px;
+    }
+
+    .bell {
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 25px;
+      border-bottom: 1px solid #2b2b2b;
+      padding-bottom: 12px;
+    }
+
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #b0b0b0;
+      cursor: pointer;
+      transition: 0.2s;
+      padding-bottom: 8px;
+      width: 100%;
+    }
+
+    .tab.active {
+      color: #2de39a;
+      border-bottom: 2px solid #2de39a;
+    }
+
+    .section-title {
+      color: #cfcfcf;
+      margin-bottom: 15px;
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .task {
+      background: #242424;
+      border-radius: 14px;
+      padding: 18px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      position: relative;
+    }
+
+    .check {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid #666;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .check.done {
+      background: #2de39a;
+      border: none;
+      color: black;
+    }
+
+    .task-content {
+      flex: 1;
+    }
+
+    .task-title {
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .task-title.completed {
+      text-decoration: line-through;
+      color: #8d8d8d;
+    }
+
+    .task-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: #c8c8c8;
+    }
+
+    .priority {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .alta {
+      background: #ffd9d9;
+      color: #b43c3c;
+    }
+
+    .media {
+      background: #fff0c7;
+      color: #9c7100;
+    }
+
+    .baixa {
+      background: #dff5d8;
+      color: #4f8a34;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .actions button {
+      background: transparent;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .add-btn {
+      position: absolute;
+      bottom: 25px;
+      right: 25px;
+      width: 55px;
+      height: 55px;
+      border-radius: 14px;
+      border: 1px solid #666;
+      background: #2b2b2b;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .add-btn:hover {
+      background: #383838;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: #232323;
+      width: 100%;
+      max-width: 400px;
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .modal-content h2 {
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      background: #333;
+      color: white;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .modal-buttons button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .save-btn {
+      background: #2de39a;
+      color: black;
+    }
+
+    .cancel-btn {
+      background: #444;
+      color: white;
+    }
+
+    .empty {
+      text-align: center;
+      color: #888;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <div>
+        <div class="title">Organiza<span>+</span></div>
+        <div class="subtitle" id="currentDate"></div>
+      </div>
+      <div class="bell">
+        <i class="fa-regular fa-bell"></i>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active">
+        <i class="fa-solid fa-check"></i>
+        <span>Tarefas</span>
+      </div>
+
+      <div class="tab">
+        <i class="fa-solid fa-fire"></i>
+        <span>Hábitos</span>
+      </div>
+
+      <div class="tab">
+        <i class="fa-regular fa-bell"></i>
+        <span>Lembretes</span>
+      </div>
+
+      <div class="tab">
+        <i class="fa-solid fa-wallet"></i>
+        <span>Gastos</span>
+      </div>
+
+      <div class="tab">
+        <i class="fa-regular fa-note-sticky"></i>
+        <span>Notas</span>
+      </div>
+
+      <div class="tab">
+        <i class="fa-solid fa-link"></i>
+        <span>Links</span>
+      </div>
+    </div>
+
+    <div class="section-title">HOJE</div>
+
+    <div class="task-list" id="taskList"></div>
+
+    <button class="add-btn" onclick="openModal()">
+      <i class="fa-solid fa-plus"></i>
+    </button>
+  </div>
+
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <h2 id="modalTitle">Nova tarefa</h2>
+
+      <div class="form-group">
+        <label>Título</label>
+        <input type="text" id="taskName">
+      </div>
+
+      <div class="form-group">
+        <label>Data</label>
+        <input type="text" id="taskDate" placeholder="Hoje, Amanhã...">
+      </div>
+
+      <div class="form-group">
+        <label>Prioridade</label>
+        <select id="taskPriority">
+          <option value="Alta">Alta</option>
+          <option value="Média">Média</option>
+          <option value="Baixa">Baixa</option>
+        </select>
+      </div>
+
+      <div class="modal-buttons">
+        <button class="save-btn" onclick="saveTask()">Salvar</button>
+        <button class="cancel-btn" onclick="closeModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const taskList = document.getElementById('taskList');
+    const modal = document.getElementById('modal');
+
+    let editIndex = null;
+
+    let tasks = [
+      {
+        title: 'Estudar lógica de programação',
+        date: 'Hoje',
+        priority: 'Alta',
+        done: true
+      },
+      {
+        title: 'Entregar protótipo do Organiza+',
+        date: 'Hoje, 23:59',
+        priority: 'Alta',
+        done: false
+      },
+      {
+        title: 'Revisar conteúdo de Java',
+        date: 'Amanhã',
+        priority: 'Média',
+        done: false
+      },
+      {
+        title: 'Ler artigo sobre padrões de design',
+        date: 'Sem prazo',
+        priority: 'Baixa',
+        done: false
+      }
+    ];
+
+    function renderTasks() {
+      taskList.innerHTML = '';
+
+      if (tasks.length === 0) {
+        taskList.innerHTML = '<div class="empty">Nenhuma tarefa cadastrada</div>';
+        return;
+      }
+
+      tasks.forEach((task, index) => {
+        const priorityClass = task.priority.toLowerCase()
+          .replace('é', 'e');
+
+        const taskElement = document.createElement('div');
+        taskElement.classList.add('task');
+
+        taskElement.innerHTML = `
+          <div class="check ${task.done ? 'done' : ''}" onclick="toggleTask(${index})">
+            ${task.done ? '<i class="fa-solid fa-check"></i>' : ''}
+          </div>
+
+          <div class="task-content">
+            <div class="task-title ${task.done ? 'completed' : ''}">
+              ${task.title}
+            </div>
+
+            <div class="task-info">
+              <span>${task.date}</span>
+              <span class="priority ${priorityClass}">${task.priority}</span>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button onclick="editTask(${index})">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+
+            <button onclick="deleteTask(${index})">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        `;
+
+        taskList.appendChild(taskElement);
+      });
+    }
+
+    function toggleTask(index) {
+      tasks[index].done = !tasks[index].done;
+      renderTasks();
+    }
+
+    function openModal() {
+      modal.style.display = 'flex';
+
+      document.getElementById('taskName').value = '';
+      document.getElementById('taskDate').value = '';
+      document.getElementById('taskPriority').value = 'Alta';
+
+      document.getElementById('modalTitle').innerText = 'Nova tarefa';
+
+      editIndex = null;
+    }
+
+    function closeModal() {
+      modal.style.display = 'none';
+    }
+
+    function saveTask() {
+      const name = document.getElementById('taskName').value;
+      const date = document.getElementById('taskDate').value;
+      const priority = document.getElementById('taskPriority').value;
+
+      if (name.trim() === '' || date.trim() === '') {
+        alert('Preencha todos os campos');
+        return;
+      }
+
+      const taskData = {
+        title: name,
+        date: date,
+        priority: priority,
+        done: false
+      };
+
+      if (editIndex === null) {
+        tasks.push(taskData);
+      } else {
+        tasks[editIndex] = {
+          ...tasks[editIndex],
+          ...taskData
+        };
+      }
+
+      renderTasks();
+      closeModal();
+    }
+
+    function editTask(index) {
+      const task = tasks[index];
+
+      document.getElementById('taskName').value = task.title;
+      document.getElementById('taskDate').value = task.date;
+      document.getElementById('taskPriority').value = task.priority;
+
+      document.getElementById('modalTitle').innerText = 'Editar tarefa';
+
+      editIndex = index;
+
+      modal.style.display = 'flex';
+    }
+
+    function deleteTask(index) {
+      const confirmDelete = confirm('Deseja remover esta tarefa?');
+
+      if (confirmDelete) {
+        tasks.splice(index, 1);
+        renderTasks();
+      }
+    }
+
+    function updateDate() {
+      const today = new Date();
+
+      const formattedDate = today.toLocaleDateString('pt-BR', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long'
+      });
+
+      document.getElementById('currentDate').innerText =
+        `Olá! Hoje é ${formattedDate}`;
+    }
+
+    updateDate();
+    renderTasks();
+  </script>
+</body>
+</html>
