@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Organiza+</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
+
+    body {
+      background: #111;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      color: white;
+      padding: 20px 0;
+    }
+    
+    .app {
+      width: 420px;
+      min-height: 850px;
+      background: #1b1b1b;
+      border-radius: 20px;
+      padding: 20px;
+      position: relative;
+      border: 1px solid #2d2d2d;
+      padding-bottom: 100px;
+    }
+
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .title { font-size: 36px; font-weight: bold; }
+    .title span { color: #2de39a; }
+    .subtitle { color: #d1d1d1; margin-top: 5px; font-size: 14px; }
+    .bell { font-size: 20px; cursor: pointer; }
+
+    .tabs {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 25px;
+      border-bottom: 1px solid #2b2b2b;
+      padding-bottom: 12px;
+    }
+
+    .tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #b0b0b0;
+      cursor: pointer;
+      transition: 0.2s;
+      padding-bottom: 8px;
+      width: 100%;
+    }
+
+    .tab.active { color: #2de39a; border-bottom: 2px solid #2de39a; }
+
+    .section-title { color: #cfcfcf; margin-bottom: 15px; font-size: 14px; letter-spacing: 1px; }
+
+    /* ===== TAREFAS ===== */
+    .task-list { display: flex; flex-direction: column; gap: 14px; }
+
+    .task {
+      background: #242424;
+      border-radius: 14px;
+      padding: 18px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      position: relative;
+    }
+
+    .check {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      border: 2px solid #666;
+      display: flex; justify-content: center; align-items: center;
+      cursor: pointer; flex-shrink: 0; margin-top: 2px;
+    }
+    .check.done { background: #2de39a; border: none; color: black; }
+
+    .task-content { flex: 1; }
+    .task-title { font-size: 18px; margin-bottom: 6px; }
+    .task-title.completed { text-decoration: line-through; color: #8d8d8d; }
+
+    .task-info { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #c8c8c8; }
+
+    .priority { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+    .alta { background: #ffd9d9; color: #b43c3c; }
+    .media { background: #fff0c7; color: #9c7100; }
+    .baixa { background: #dff5d8; color: #4f8a34; }
+
+    .actions { display: flex; flex-direction: column; gap: 10px; }
+    .actions button { background: transparent; border: none; color: white; cursor: pointer; font-size: 16px; }
+
+    /* ===== HÁBITOS ===== */
+    .habit-list { display: flex; flex-direction: column; gap: 14px; }
+
+    .habit {
+      background: #242424;
+      border-radius: 14px;
+      padding: 16px 18px;
+    }
+
+    .habit-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .habit-name { font-size: 16px; font-weight: bold; }
+    .habit-actions { display: flex; gap: 8px; }
+    .habit-actions button { background: transparent; border: none; color: #aaa; cursor: pointer; font-size: 14px; }
+
+    .habit-streak { font-size: 12px; color: #2de39a; margin-bottom: 10px; }
+
+    .habit-days { display: flex; gap: 6px; justify-content: space-between; }
+
+    .habit-day {
+      flex: 1;
+      height: 52px;
+      border-radius: 10px;
+      background: #333;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: 0.2s;
+      gap: 4px;
+    }
+
+    .habit-day span.day-num { font-size: 13px; font-weight: bold; color: #ccc; }
+    .habit-day span.day-label { font-size: 10px; color: #777; text-transform: uppercase; }
+    .habit-day.done { background: #2de39a; }
+    .habit-day.done span.day-num { color: #000; }
+    .habit-day.done span.day-label { color: #00704a; }
+
+
+    /* ===== LEMBRETES ===== */
+    .reminder-list { display: flex; flex-direction: column; gap: 14px; }
+
+    .reminder {
+      background: #242424;
+      border-radius: 14px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .reminder-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: #2de39a22;
+      display: flex; justify-content: center; align-items: center;
+      color: #2de39a;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .reminder-icon.done-icon { background: #33333366; color: #666; }
+
+    .reminder-body { flex: 1; }
+    .reminder-title { font-size: 15px; margin-bottom: 4px; }
+    .reminder-title.completed { text-decoration: line-through; color: #666; }
+    .reminder-time { font-size: 13px; color: #aaa; }
+
+    .reminder-actions { display: flex; gap: 8px; }
+    .reminder-actions button { background: transparent; border: none; color: #aaa; cursor: pointer; font-size: 14px; }
+    .reminder-check { color: #2de39a !important; }
+
+    /* ===== GASTOS ===== */
+    .gastos-summary {
+      background: #242424;
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 20px;
+    }
+
+    .gastos-summary h3 { font-size: 14px; color: #aaa; margin-bottom: 6px; }
+    .gastos-total { font-size: 32px; font-weight: bold; color: #2de39a; }
+    .gastos-sub { font-size: 12px; color: #777; margin-top: 4px; }
+
+    .gastos-cats { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+
+    .cat-pill {
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: 0.2s;
+    }
+    .cat-pill.active { border-color: #2de39a; color: #2de39a; }
+
+    .gasto-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .gasto {
+      background: #242424;
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .gasto-left { display: flex; align-items: center; gap: 12px; }
+
+    .gasto-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      display: flex; justify-content: center; align-items: center;
+      font-size: 16px;
+    }
+
+    .gasto-info .gasto-name { font-size: 15px; }
+    .gasto-info .gasto-cat { font-size: 12px; color: #888; margin-top: 2px; }
+    .gasto-value { font-size: 16px; font-weight: bold; color: #ff6b6b; }
+    .gasto-actions button { background: transparent; border: none; color: #666; cursor: pointer; margin-left: 8px; font-size: 14px; }
+
+    /* ===== NOTAS ===== */
+    .notas-search {
+      background: #242424;
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .notas-search input {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 14px;
+      flex: 1;
+      outline: none;
+    }
+
+    .notas-search i { color: #666; }
+
+    .nota-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .nota {
+      background: #242424;
+      border-radius: 14px;
+      padding: 16px 18px;
+    }
+
+    .nota-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    .nota-title { font-size: 15px; font-weight: bold; }
+    .nota-actions button { background: transparent; border: none; color: #666; cursor: pointer; font-size: 14px; margin-left: 6px; }
+    .nota-text { font-size: 13px; color: #aaa; line-height: 1.6; margin-bottom: 8px; }
+    .nota-cat-tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+      background: #2de39a22;
+      color: #2de39a;
+    }
+    .nota-date { font-size: 11px; color: #555; margin-top: 6px; }
+
+    /* ===== LINKS ===== */
+    .links-search {
+      background: #242424;
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .links-search input {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 14px;
+      flex: 1;
+      outline: none;
+    }
+
+    .links-search i { color: #666; }
+
+    .link-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .link-card {
+      background: #242424;
+      border-radius: 14px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .link-favicon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      background: #333;
+      display: flex; justify-content: center; align-items: center;
+      color: #2de39a;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .link-body { flex: 1; }
+    .link-title { font-size: 15px; font-weight: bold; margin-bottom: 4px; }
+    .link-desc { font-size: 12px; color: #888; margin-bottom: 6px; }
+    .link-url { font-size: 11px; color: #2de39a; text-decoration: none; word-break: break-all; }
+    .link-actions button { background: transparent; border: none; color: #666; cursor: pointer; font-size: 14px; margin-left: 6px; }
+
+    /* ===== SHARED ===== */
+    .add-btn {
+      position: fixed;
+      bottom: 25px;
+      width: 55px; height: 55px;
+      border-radius: 14px;
+      border: 1px solid #666;
+      background: #2b2b2b;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-left: 340px;
+    }
+
+    .add-btn:hover { background: #383838; }
+
+    .modal {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 100;
+    }
+
+    .modal-content {
+      background: #232323;
+      width: 100%; max-width: 400px;
+      border-radius: 16px;
+      padding: 24px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-content h2 { margin-bottom: 20px; }
+
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; margin-bottom: 8px; font-size: 14px; }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%; padding: 12px;
+      border-radius: 10px;
+      border: none;
+      background: #333;
+      color: white;
+      font-size: 14px;
+      font-family: Arial;
+    }
+
+    .form-group textarea { resize: vertical; min-height: 80px; }
+
+    .modal-buttons { display: flex; gap: 10px; margin-top: 20px; }
+    .modal-buttons button { flex: 1; padding: 12px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; }
+    .save-btn { background: #2de39a; color: black; }
+    .cancel-btn { background: #444; color: white; }
+
+    .empty { text-align: center; color: #888; margin-top: 40px; }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <div>
+        <div class="title">Organiza<span>+</span></div>
+        <div class="subtitle" id="currentDate"></div>
+      </div>
+      <div class="bell"><i class="fa-regular fa-bell"></i></div>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('tarefas', this)">
+        <i class="fa-solid fa-check"></i><span>Tarefas</span>
+      </div>
+      <div class="tab" onclick="switchTab('habitos', this)">
+        <i class="fa-solid fa-fire"></i><span>Hábitos</span>
+      </div>
+      <div class="tab" onclick="switchTab('lembretes', this)">
+        <i class="fa-regular fa-bell"></i><span>Lembretes</span>
+      </div>
+      <div class="tab" onclick="switchTab('gastos', this)">
+        <i class="fa-solid fa-wallet"></i><span>Gastos</span>
+      </div>
+      <div class="tab" onclick="switchTab('notas', this)">
+        <i class="fa-regular fa-note-sticky"></i><span>Notas</span>
+      </div>
+      <div class="tab" onclick="switchTab('links', this)">
+        <i class="fa-solid fa-link"></i><span>Links</span>
+      </div>
+    </div>
+
+    <!-- TAREFAS -->
+    <div class="tab-content active" id="tab-tarefas">
+      <div class="section-title">HOJE</div>
+      <div class="task-list" id="taskList"></div>
+    </div>
+
+    <!-- HÁBITOS -->
+    <div class="tab-content" id="tab-habitos">
+      <div class="section-title">SEUS HÁBITOS</div>
+      <div class="habit-list" id="habitList"></div>
+    </div>
+
+    <!-- LEMBRETES -->
+    <div class="tab-content" id="tab-lembretes">
+      <div class="section-title">LEMBRETES</div>
+      <div class="reminder-list" id="reminderList"></div>
+    </div>
+
+    <!-- GASTOS -->
+    <div class="tab-content" id="tab-gastos">
+      <div class="gastos-summary">
+        <h3>TOTAL DO MÊS</h3>
+        <div class="gastos-total" id="gastosTotal">R$ 0,00</div>
+        <div class="gastos-sub" id="gastosSub">0 registros</div>
+        <div class="gastos-cats" id="gastosCats"></div>
+      </div>
+      <div class="section-title">REGISTROS</div>
+      <div class="gasto-list" id="gastoList"></div>
+    </div>
+
+    <!-- NOTAS -->
+    <div class="tab-content" id="tab-notas">
+      <div class="notas-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="notaSearch" placeholder="Buscar notas..." oninput="renderNotas()">
+      </div>
+      <div class="nota-list" id="notaList"></div>
+    </div>
+
+    <!-- LINKS -->
+    <div class="tab-content" id="tab-links">
+      <div class="links-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="linkSearch" placeholder="Buscar links..." oninput="renderLinks()">
+      </div>
+      <div class="link-list" id="linkList"></div>
+    </div>
+
+    <button class="add-btn" onclick="openAddModal()">
+      <i class="fa-solid fa-plus"></i>
+    </button>
+  </div>
+
+  <!-- MODAL TAREFAS -->
+  <div class="modal" id="modalTarefa">
+    <div class="modal-content">
+      <h2 id="modalTarefaTitle">Nova tarefa</h2>
+      <div class="form-group"><label>Título</label><input type="text" id="taskName"></div>
+      <div class="form-group"><label>Data</label><input type="text" id="taskDate" placeholder="Hoje, Amanhã..."></div>
+      <div class="form-group">
+        <label>Prioridade</label>
+        <select id="taskPriority">
+          <option value="Alta">Alta</option>
+          <option value="Média">Média</option>
+          <option value="Baixa">Baixa</option>
+        </select>
+      </div>
+      <div class="modal-buttons">
+        <button class="save-btn" onclick="saveTask()">Salvar</button>
+        <button class="cancel-btn" onclick="closeAllModals()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL HÁBITOS -->
+  <div class="modal" id="modalHabito">
+    <div class="modal-content">
+      <h2 id="modalHabitoTitle">Novo hábito</h2>
+      <div class="form-group"><label>Nome do hábito</label><input type="text" id="habitName" placeholder="Ex: Beber água, Estudar..."></div>
+      <div class="modal-buttons">
+        <button class="save-btn" onclick="saveHabito()">Salvar</button>
+        <button class="cancel-btn" onclick="closeAllModals()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL LEMBRETES -->
+  <div class="modal" id="modalLembrete">
+    <div class="modal-content">
+      <h2 id="modalLembreteTitle">Novo lembrete</h2>
+      <div class="form-group"><label>Título</label><input type="text" id="remTitle"></div>
+      <div class="form-group"><label>Data</label><input type="date" id="remDate"></div>
+      <div class="form-group"><label>Horário</label><input type="time" id="remTime"></div>
+      <div class="modal-buttons">
+        <button class="save-btn" onclick="saveLembrete()">Salvar</button>
+        <button class="cancel-btn" onclick="closeAllModals()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL GASTOS -->
+  <div class="modal" id="modalGasto">
+    <div class="modal-content">
+      <h2 id="modalGastoTitle">Novo gasto</h2>
+      <div class="form-group"><label>Descrição</label><input type="text" id="gastoName"></div>
+      <div class="form-group"><label>Valor (R$)</label><input type="number" id="gastoValue" step="0.01" min="0" placeholder="0,00"></div>
+      <div class="form-group">
+        <label>Categoria</label>
+        <select id="gastoCat">
+          <option value="Alimentação">Alimentação</option>
+          <option value="Transporte">Transporte</option>
+          <option value="Lazer">Lazer</option>
+          <option value="Estudos">Estudos</option>
+          <option value="Saúde">Saúde</option>
+          <option value="Outros">Outros</option>
+        </select>
+      </div>
+      <div class="modal-buttons">
+        <button class="save-btn" onclick="saveGasto()">Salvar</button>
+        <button class="cancel-btn" onclick="closeAllModals()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL NOTAS -->
+  <div class="modal" id="modalNota">
+    <div class="modal-content">
+      <h2 id="modalNotaTitle">Nova nota</h2>
+      <div class="form-group"><label>Título</label><input type="text" id="notaTitle"></div>
+      <div class="form-group"><label>Conteúdo</label><textarea id="notaText" placeholder="Escreva sua nota..."></textarea></div>
+      <div class="form-group">
+        <label>Categoria</label>
+        <select id="notaCat">
+          <option value="Geral">Geral</option>
+          <option value="Estudos">Estudos</option>
+          <option value="Trabalho">Trabalho</option>
+          <option value="Ideias">Ideias</option>
+          <option value="Pessoal">Pessoal</option>
+        </select>
+      </div>
+      <div class="modal-buttons">
+        <button class="save-btn" onclick="saveNota()">Salvar</button>
+        <button class="cancel-btn" onclick="closeAllModals()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL LINKS -->
+  <div class="modal" id="modalLink">
+    <div class="modal-content">
+      <h2 id="modalLinkTitle">Novo link</h2>
+      <div class="form-group"><label>Título</label><input type="text" id="linkTitle"></div>
+      <div class="form-group"><label>URL</label><input type="url" id="linkUrl" placeholder="https://..."></div>
+      <div class="form-group"><label>Descrição</label><input type="text" id="linkDesc" placeholder="Para que serve esse link?"></div>
+      <div class="modal-buttons">
+        <button class="save-btn" onclick="saveLink()">Salvar</button>
+        <button class="cancel-btn" onclick="closeAllModals()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== STATE =====
+    let currentTab = 'tarefas';
+    let editIndex = null;
+
+    function load(key, def) {
+      try { return JSON.parse(localStorage.getItem(key)) || def; } catch { return def; }
+    }
+    function save(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+
+    let tasks = load('tasks', [
+      { title: 'Estudar lógica de programação', date: 'Hoje', priority: 'Alta', done: true },
+      { title: 'Entregar protótipo do Organiza+', date: 'Hoje, 23:59', priority: 'Alta', done: false },
+      { title: 'Revisar conteúdo de Java', date: 'Amanhã', priority: 'Média', done: false },
+      { title: 'Ler artigo sobre padrões de design', date: 'Sem prazo', priority: 'Baixa', done: false }
+    ]);
+
+    let habitos = load('habitos', [
+      { name: 'Beber água', history: [] },
+      { name: 'Estudar', history: [] }
+    ]);
+
+    let lembretes = load('lembretes', [
+      { title: 'Reunião com a equipe', date: '2025-06-10', time: '14:00', done: false },
+      { title: 'Enviar relatório', date: '2025-06-08', time: '09:00', done: false }
+    ]);
+
+    let gastos = load('gastos', [
+      { name: 'Almoço RU', value: 3.50, cat: 'Alimentação' },
+      { name: 'Uber para faculdade', value: 12.00, cat: 'Transporte' },
+      { name: 'Curso Udemy', value: 27.90, cat: 'Estudos' }
+    ]);
+
+    let notas = load('notas', [
+      { title: 'Ideias pro TCC', text: 'Implementar salvamento automático. Adicionar modo escuro.', cat: 'Ideias', date: '05/06/2025' },
+      { title: 'Resumo de Java', text: 'Herança, polimorfismo, encapsulamento, interface, classe abstrata.', cat: 'Estudos', date: '04/06/2025' }
+    ]);
+
+    let links = load('links', [
+      { title: 'Font Awesome', url: 'https://fontawesome.com', desc: 'Biblioteca de ícones usada no projeto' },
+      { title: 'MDN Web Docs', url: 'https://developer.mozilla.org', desc: 'Referência completa de HTML, CSS e JS' }
+    ]);
+
+    let gastoFiltro = 'Todos';
+
+    // ===== TAB SWITCH =====
+    function switchTab(tab, el) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      el.classList.add('active');
+      currentTab = tab;
+      renderAll();
+    }
+
+    // ===== RENDER =====
+    function renderAll() {
+      renderTasks();
+      renderHabitos();
+      renderLembretes();
+      renderGastos();
+      renderNotas();
+      renderLinks();
+    }
+
+    // --- TAREFAS ---
+    function renderTasks() {
+      const list = document.getElementById('taskList');
+      list.innerHTML = '';
+      if (!tasks.length) { list.innerHTML = '<div class="empty">Nenhuma tarefa cadastrada</div>'; return; }
+      tasks.forEach((task, i) => {
+        const pc = task.priority.toLowerCase().replace('é','e');
+        const el = document.createElement('div');
+        el.classList.add('task');
+        el.innerHTML = `
+          <div class="check ${task.done ? 'done' : ''}" onclick="toggleTask(${i})">
+            ${task.done ? '<i class="fa-solid fa-check"></i>' : ''}
+          </div>
+          <div class="task-content">
+            <div class="task-title ${task.done ? 'completed' : ''}">${task.title}</div>
+            <div class="task-info">
+              <span>${task.date}</span>
+              <span class="priority ${pc}">${task.priority}</span>
+            </div>
+          </div>
+          <div class="actions">
+            <button onclick="editTask(${i})"><i class="fa-solid fa-pen"></i></button>
+            <button onclick="deleteTask(${i})"><i class="fa-solid fa-trash"></i></button>
+          </div>`;
+        list.appendChild(el);
+      });
+    }
+
+    function toggleTask(i) { tasks[i].done = !tasks[i].done; save('tasks', tasks); renderTasks(); }
+
+    function editTask(i) {
+      const t = tasks[i];
+      document.getElementById('taskName').value = t.title;
+      document.getElementById('taskDate').value = t.date;
+      document.getElementById('taskPriority').value = t.priority;
+      document.getElementById('modalTarefaTitle').innerText = 'Editar tarefa';
+      editIndex = i;
+      document.getElementById('modalTarefa').style.display = 'flex';
+    }
+
+    function deleteTask(i) {
+      if (confirm('Remover esta tarefa?')) { tasks.splice(i, 1); save('tasks', tasks); renderTasks(); }
+    }
+
+    function saveTask() {
+      const name = document.getElementById('taskName').value.trim();
+      const date = document.getElementById('taskDate').value.trim();
+      const priority = document.getElementById('taskPriority').value;
+      if (!name || !date) { alert('Preencha todos os campos'); return; }
+      const data = { title: name, date, priority, done: false };
+      if (editIndex === null) { tasks.push(data); }
+      else { tasks[editIndex] = { ...tasks[editIndex], ...data }; }
+      save('tasks', tasks);
+      renderTasks();
+      closeAllModals();
+    }
+
+    // --- HÁBITOS ---
+    function getTodayKey() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+
+    function getWeekDays() {
+      const weekdays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+      const today = new Date();
+      const todayDow = today.getDay();
+      const monday = new Date(today);
+      const diffToMonday = (todayDow === 0) ? -6 : 1 - todayDow;
+      monday.setDate(today.getDate() + diffToMonday);
+      const days = [];
+      for (let i = 0; i < 7; i++) {
+        const d = new Date(monday);
+        d.setDate(monday.getDate() + i);
+        const dow = d.getDay();
+        const key = dateKey(d);
+        days.push({ key, label: weekdays[dow], num: d.getDate() });
+      }
+      return days;
+    }
+
+    function dateKey(d) {
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+
+    function getStreak(habito) {
+      const today = new Date();
+      let streak = 0;
+      const d = new Date(today);
+      while (true) {
+        const dow = d.getDay();
+        const key = dateKey(d);
+        if (habito.history.includes(key)) { streak++; d.setDate(d.getDate() - 1); }
+        else break;
+        if (streak > 365) break;
+      }
+      return streak;
+    }
+
+    function renderHabitos() {
+      const list = document.getElementById('habitList');
+      list.innerHTML = '';
+      if (!habitos.length) { list.innerHTML = '<div class="empty">Nenhum hábito cadastrado</div>'; return; }
+      const days = getWeekDays();
+      habitos.forEach((h, i) => {
+        const streak = getStreak(h);
+        const daysHtml = days.map(d => `
+          <div class="habit-day ${h.history.includes(d.key) ? 'done' : ''}"
+               onclick="toggleHabito(${i}, '${d.key}')">
+            <span class="day-num">${d.num}</span>
+            <span class="day-label">${d.label}</span>
+          </div>`).join('');
+        const el = document.createElement('div');
+        el.classList.add('habit');
+        el.innerHTML = `
+          <div class="habit-header">
+            <div class="habit-name">${h.name}</div>
+            <div class="habit-actions">
+              <button onclick="editHabito(${i})"><i class="fa-solid fa-pen"></i></button>
+              <button onclick="deleteHabito(${i})"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+          <div class="habit-days">${daysHtml}</div>`;
+        list.appendChild(el);
+      });
+    }
+
+    function toggleHabito(i, key) {
+      const h = habitos[i];
+      const idx = h.history.indexOf(key);
+      if (idx === -1) h.history.push(key);
+      else h.history.splice(idx, 1);
+      save('habitos', habitos);
+      renderHabitos();
+    }
+
+    function editHabito(i) {
+      const h = habitos[i];
+      document.getElementById('habitName').value = h.name;
+      document.getElementById('modalHabitoTitle').innerText = 'Editar hábito';
+      editIndex = i;
+      document.getElementById('modalHabito').style.display = 'flex';
+    }
+
+    function deleteHabito(i) {
+      if (confirm('Remover este hábito?')) { habitos.splice(i, 1); save('habitos', habitos); renderHabitos(); }
+    }
+
+    function saveHabito() {
+      const name = document.getElementById('habitName').value.trim();
+      if (!name) { alert('Preencha o nome'); return; }
+      if (editIndex === null) { habitos.push({ name, history: [] }); }
+      else { habitos[editIndex].name = name; }
+      save('habitos', habitos);
+      renderHabitos();
+      closeAllModals();
+    }
+
+    // --- LEMBRETES ---
+    function renderLembretes() {
+      const list = document.getElementById('reminderList');
+      list.innerHTML = '';
+      if (!lembretes.length) { list.innerHTML = '<div class="empty">Nenhum lembrete cadastrado</div>'; return; }
+      const sorted = [...lembretes].map((r, i) => ({ ...r, _i: i }))
+        .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+      sorted.forEach(r => {
+        const i = r._i;
+        const dateStr = r.date ? new Date(r.date + 'T00:00').toLocaleDateString('pt-BR') : '';
+        const el = document.createElement('div');
+        el.classList.add('reminder');
+        el.innerHTML = `
+          <div class="reminder-icon ${r.done ? 'done-icon' : ''}">
+            <i class="fa-${r.done ? 'solid' : 'regular'} fa-bell"></i>
+          </div>
+          <div class="reminder-body">
+            <div class="reminder-title ${r.done ? 'completed' : ''}">${r.title}</div>
+            <div class="reminder-time">${dateStr}${r.time ? ' às ' + r.time : ''}</div>
+          </div>
+          <div class="reminder-actions">
+            <button class="${r.done ? '' : 'reminder-check'}" onclick="toggleLembrete(${i})">
+              <i class="fa-solid ${r.done ? 'fa-rotate-left' : 'fa-check'}"></i>
+            </button>
+            <button onclick="editLembrete(${i})"><i class="fa-solid fa-pen"></i></button>
+            <button onclick="deleteLembrete(${i})"><i class="fa-solid fa-trash"></i></button>
+          </div>`;
+        list.appendChild(el);
+      });
+    }
+
+    function toggleLembrete(i) { lembretes[i].done = !lembretes[i].done; save('lembretes', lembretes); renderLembretes(); }
+
+    function editLembrete(i) {
+      const r = lembretes[i];
+      document.getElementById('remTitle').value = r.title;
+      document.getElementById('remDate').value = r.date;
+      document.getElementById('remTime').value = r.time;
+      document.getElementById('modalLembreteTitle').innerText = 'Editar lembrete';
+      editIndex = i;
+      document.getElementById('modalLembrete').style.display = 'flex';
+    }
+
+    function deleteLembrete(i) {
+      if (confirm('Remover este lembrete?')) { lembretes.splice(i, 1); save('lembretes', lembretes); renderLembretes(); }
+    }
+
+    function saveLembrete() {
+      const title = document.getElementById('remTitle').value.trim();
+      const date = document.getElementById('remDate').value;
+      const time = document.getElementById('remTime').value;
+      if (!title) { alert('Preencha o título'); return; }
+      const data = { title, date, time, done: false };
+      if (editIndex === null) { lembretes.push(data); }
+      else { lembretes[editIndex] = { ...lembretes[editIndex], ...data }; }
+      save('lembretes', lembretes);
+      renderLembretes();
+      closeAllModals();
+    }
+
+    // --- GASTOS ---
+    const catColors = {
+      'Alimentação': { bg: '#ffd9d922', color: '#ff6b6b', icon: '' },
+      'Transporte':  { bg: '#fff0c722', color: '#f0c040', icon: '' },
+      'Lazer':       { bg: '#d8f5ff22', color: '#40c0f0', icon: '' },
+      'Estudos':     { bg: '#dff5d822', color: '#4f8a34', icon: '' },
+      'Saúde':       { bg: '#ffe0f022', color: '#e060a0', icon: '' },
+      'Outros':      { bg: '#f0f0f022', color: '#aaaaaa', icon: '' }
+    };
+
+    function renderGastos() {
+      const list = document.getElementById('gastoList');
+      const totalEl = document.getElementById('gastosTotal');
+      const subEl = document.getElementById('gastosSub');
+      const catsEl = document.getElementById('gastosCats');
+
+      const total = gastos.reduce((s, g) => s + parseFloat(g.value), 0);
+      totalEl.textContent = 'R$ ' + total.toFixed(2).replace('.', ',');
+      subEl.textContent = gastos.length + ' registro' + (gastos.length !== 1 ? 's' : '');
+
+      const cats = ['Todos', ...Object.keys(catColors)];
+      catsEl.innerHTML = cats.map(c => `
+        <span class="cat-pill ${gastoFiltro === c ? 'active' : ''}" onclick="setGastoFiltro('${c}')">${c}</span>
+      `).join('');
+
+      const filtered = gastoFiltro === 'Todos' ? gastos : gastos.filter(g => g.cat === gastoFiltro);
+      list.innerHTML = '';
+      if (!filtered.length) { list.innerHTML = '<div class="empty">Nenhum gasto registrado</div>'; return; }
+      filtered.forEach((g, i) => {
+        const realIdx = gastos.indexOf(g);
+        const c = catColors[g.cat] || catColors['Outros'];
+        const el = document.createElement('div');
+        el.classList.add('gasto');
+        el.innerHTML = `
+          <div class="gasto-left">
+            <div class="gasto-icon" style="background:${c.bg};color:${c.color}">${c.icon}</div>
+            <div class="gasto-info">
+              <div class="gasto-name">${g.name}</div>
+              <div class="gasto-cat">${g.cat}</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center">
+            <span class="gasto-value">- R$ ${parseFloat(g.value).toFixed(2).replace('.', ',')}</span>
+            <div class="gasto-actions">
+              <button onclick="editGasto(${realIdx})"><i class="fa-solid fa-pen"></i></button>
+              <button onclick="deleteGasto(${realIdx})"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>`;
+        list.appendChild(el);
+      });
+    }
+
+    function setGastoFiltro(cat) { gastoFiltro = cat; renderGastos(); }
+
+    function editGasto(i) {
+      const g = gastos[i];
+      document.getElementById('gastoName').value = g.name;
+      document.getElementById('gastoValue').value = g.value;
+      document.getElementById('gastoCat').value = g.cat;
+      document.getElementById('modalGastoTitle').innerText = 'Editar gasto';
+      editIndex = i;
+      document.getElementById('modalGasto').style.display = 'flex';
+    }
+
+    function deleteGasto(i) {
+      if (confirm('Remover este gasto?')) { gastos.splice(i, 1); save('gastos', gastos); renderGastos(); }
+    }
+
+    function saveGasto() {
+      const name = document.getElementById('gastoName').value.trim();
+      const value = parseFloat(document.getElementById('gastoValue').value);
+      const cat = document.getElementById('gastoCat').value;
+      if (!name || isNaN(value)) { alert('Preencha todos os campos'); return; }
+      const data = { name, value, cat };
+      if (editIndex === null) { gastos.push(data); }
+      else { gastos[editIndex] = data; }
+      save('gastos', gastos);
+      renderGastos();
+      closeAllModals();
+    }
+
+    // --- NOTAS ---
+    function renderNotas() {
+      const list = document.getElementById('notaList');
+      const q = document.getElementById('notaSearch').value.toLowerCase();
+      const filtered = notas.filter(n =>
+        n.title.toLowerCase().includes(q) || n.text.toLowerCase().includes(q)
+      );
+      list.innerHTML = '';
+      if (!filtered.length) { list.innerHTML = '<div class="empty">Nenhuma nota encontrada</div>'; return; }
+      filtered.forEach((n, i) => {
+        const realIdx = notas.indexOf(n);
+        const el = document.createElement('div');
+        el.classList.add('nota');
+        el.innerHTML = `
+          <div class="nota-header">
+            <div class="nota-title">${n.title}</div>
+            <div class="nota-actions">
+              <button onclick="editNota(${realIdx})"><i class="fa-solid fa-pen"></i></button>
+              <button onclick="deleteNota(${realIdx})"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+          <div class="nota-text">${n.text}</div>
+          <span class="nota-cat-tag">${n.cat}</span>
+          <div class="nota-date">${n.date}</div>`;
+        list.appendChild(el);
+      });
+    }
+
+    function editNota(i) {
+      const n = notas[i];
+      document.getElementById('notaTitle').value = n.title;
+      document.getElementById('notaText').value = n.text;
+      document.getElementById('notaCat').value = n.cat;
+      document.getElementById('modalNotaTitle').innerText = 'Editar nota';
+      editIndex = i;
+      document.getElementById('modalNota').style.display = 'flex';
+    }
+
+    function deleteNota(i) {
+      if (confirm('Remover esta nota?')) { notas.splice(i, 1); save('notas', notas); renderNotas(); }
+    }
+
+    function saveNota() {
+      const title = document.getElementById('notaTitle').value.trim();
+      const text = document.getElementById('notaText').value.trim();
+      const cat = document.getElementById('notaCat').value;
+      if (!title || !text) { alert('Preencha título e conteúdo'); return; }
+      const today = new Date().toLocaleDateString('pt-BR');
+      const data = { title, text, cat, date: today };
+      if (editIndex === null) { notas.unshift(data); }
+      else { notas[editIndex] = data; }
+      save('notas', notas);
+      renderNotas();
+      closeAllModals();
+    }
+
+    // --- LINKS ---
+    function renderLinks() {
+      const list = document.getElementById('linkList');
+      const q = document.getElementById('linkSearch').value.toLowerCase();
+      const filtered = links.filter(l =>
+        l.title.toLowerCase().includes(q) || l.desc.toLowerCase().includes(q) || l.url.toLowerCase().includes(q)
+      );
+      list.innerHTML = '';
+      if (!filtered.length) { list.innerHTML = '<div class="empty">Nenhum link salvo</div>'; return; }
+      filtered.forEach((l, i) => {
+        const realIdx = links.indexOf(l);
+        const el = document.createElement('div');
+        el.classList.add('link-card');
+        el.innerHTML = `
+          <div class="link-favicon"><i class="fa-solid fa-link"></i></div>
+          <div class="link-body">
+            <div class="link-title">${l.title}</div>
+            <div class="link-desc">${l.desc}</div>
+            <a class="link-url" href="${l.url}" target="_blank">${l.url}</a>
+          </div>
+          <div>
+            <div class="link-actions">
+              <button onclick="editLink(${realIdx})"><i class="fa-solid fa-pen"></i></button>
+              <button onclick="deleteLink(${realIdx})"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>`;
+        list.appendChild(el);
+      });
+    }
+
+    function editLink(i) {
+      const l = links[i];
+      document.getElementById('linkTitle').value = l.title;
+      document.getElementById('linkUrl').value = l.url;
+      document.getElementById('linkDesc').value = l.desc;
+      document.getElementById('modalLinkTitle').innerText = 'Editar link';
+      editIndex = i;
+      document.getElementById('modalLink').style.display = 'flex';
+    }
+
+    function deleteLink(i) {
+      if (confirm('Remover este link?')) { links.splice(i, 1); save('links', links); renderLinks(); }
+    }
+
+    function saveLink() {
+      const title = document.getElementById('linkTitle').value.trim();
+      const url = document.getElementById('linkUrl').value.trim();
+      const desc = document.getElementById('linkDesc').value.trim();
+      if (!title || !url) { alert('Preencha título e URL'); return; }
+      const data = { title, url, desc };
+      if (editIndex === null) { links.push(data); }
+      else { links[editIndex] = data; }
+      save('links', links);
+      renderLinks();
+      closeAllModals();
+    }
+
+    // ===== MODALS =====
+    const modalMap = {
+      'tarefas': 'modalTarefa',
+      'habitos': 'modalHabito',
+      'lembretes': 'modalLembrete',
+      'gastos': 'modalGasto',
+      'notas': 'modalNota',
+      'links': 'modalLink'
+    };
+
+    function openAddModal() {
+      editIndex = null;
+      const modalId = modalMap[currentTab];
+      // reset titles
+      const titles = { tarefas: 'Nova tarefa', habitos: 'Novo hábito', lembretes: 'Novo lembrete', gastos: 'Novo gasto', notas: 'Nova nota', links: 'Novo link' };
+      const titleEl = document.getElementById(modalId).querySelector('h2');
+      if (titleEl) titleEl.innerText = titles[currentTab];
+      document.getElementById(modalId).style.display = 'flex';
+    }
+
+    function closeAllModals() {
+      document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+      editIndex = null;
+    }
+
+    document.querySelectorAll('.modal').forEach(m => {
+      m.addEventListener('click', e => { if (e.target === m) closeAllModals(); });
+    });
+
+    // ===== DATE =====
+    function updateDate() {
+      const today = new Date();
+      const formatted = today.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+      document.getElementById('currentDate').innerText = `Olá! Hoje é ${formatted}`;
+    }
+
+    updateDate();
+    renderAll();
+  </script>
+</body>
+</html>
